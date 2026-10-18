@@ -192,3 +192,32 @@ def test_all_configurations_equal_brute_force_on_random_graphs(seed):
                     assert r.value == value, (seed, objective, bound, order, prune)
                     assert A.is_clique(g.adj, r.clique) and A.clique_value(w, r.clique) == r.value
                     assert r.clique in optimal
+
+
+# --- Lücken aus der Mutationsprüfung (gleichwertige Mutanten bleiben: `or`/`and` bei veralteten Heap-Einträgen, Sortierreihenfolge bei vollständigem Schlüssel) ---------
+
+def test_history_is_strictly_increasing_in_every_configuration():
+    """Ein gleich guter Fund ist keine Verbesserung (fängt `>` gegen `>=` an der Blatt-Bedingung)."""
+    for seed in range(15):
+        g = S.random_graph(14, 50, seed)
+        w = S.make_weights(14, seed, "size")
+        for bound in ("simple", "color"):
+            for order in ("index", "degree", "degeneracy"):
+                values = [v for _, v in A.largest_clique(g.adj, w, bound, order).history]
+                assert all(a < b for a, b in zip(values, values[1:])), (seed, bound, order, values)
+
+
+def test_the_first_optimal_clique_found_is_kept_on_ties(pentagon):
+    r = A.largest_clique(pentagon, (1,) * 5, "simple", "index")
+    assert r.clique == (0, 1) and r.value == 2 and [v for _, v in r.history] == [2]
+
+
+def test_invalid_weights_are_rejected(mini):
+    with pytest.raises(AssertionError):
+        A.largest_clique(mini, (1, 1, 0, 1, 1))
+    with pytest.raises(AssertionError):
+        A.largest_clique(mini, (1, 1, 1))
+
+
+def test_root_color_bound_of_the_empty_graph_is_zero():
+    assert A.root_color_bound(S.adjacency_from_edges(0, []), ()) == 0
