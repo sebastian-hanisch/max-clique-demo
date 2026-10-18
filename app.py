@@ -13,12 +13,13 @@ import streamlit as st
 
 import mxc_constants as C
 import mxc_evaluation as ev
+from mxc_layout import dunkles_design, kopf_css
 from mxc_presets import (
-    apply_preset,
     bounds,
     init_session_state_defaults,
     load_permalink_settings,
     randomize_seed,
+    sidebar_presets,
     sync_query_params,
 )
 from mxc_visualization import (
@@ -84,7 +85,10 @@ def _complement(settings):
     return ev.complement_check(settings)
 
 
-st.title("🧩 Größte Clique: Färbungsschranke und Kernzahl")
+# Fester Kopf: nur der Titel bleibt beim Scrollen oben (Stylesheet in mxc_layout.py).
+st.html(kopf_css(dunkles_design()))
+with st.container(key="kopf"):
+    st.title("🧩 Größte Clique: Färbungsschranke und Kernzahl")
 st.markdown(
     """
 Wer eine Fuhre packt, will meist die **größte** Gruppe von Sendungen, die sich alle paarweise vertragen: eine **größte Clique** im Verträglichkeitsgraphen (Sendung = Knoten, Kante = „dürfen zusammen verladen werden“). Die Demo zur Aufzählung aller maximalen Fuhren zeigt, dass es davon bis 3^(n/3) geben kann; hier wird nur die größte gesucht, per **Branch-and-Bound**, und die Frage ist, wie gut die **obere Schranke** ist, mit der er Teilbäume abschneidet.
@@ -110,11 +114,6 @@ with st.expander("So funktioniert Branch-and-Bound mit Färbungsschranke", expan
         """
     )
 
-st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
-cols = st.columns(len(C.PRESETS))
-for col, name in zip(cols, C.PRESETS):
-    with col:
-        st.button(name, width="stretch", on_click=apply_preset, args=(name,), help=C.PRESET_HELP.get(name, ""), key=f"preset_{name}")
 
 st.caption("🔗 Die Adresszeile oben spiegelt Ihre aktuelle Konfiguration wider – einfach kopieren, um ein Szenario zu teilen.")
 
@@ -122,6 +121,7 @@ load_permalink_settings()
 init_session_state_defaults()
 
 with st.sidebar:
+    sidebar_presets()  # Schnellstart oben, das aktive Preset ist hervorgehoben
     st.header("⚙️ Einstellungen")
     st.markdown("**Graph**")
     graph_type = st.selectbox("Regelart", list(C.GRAPH_TYPES), format_func=C.GRAPH_TYPES.get, key="type_select",

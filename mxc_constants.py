@@ -38,6 +38,7 @@ CLASS_PALETTE = ("#4c78a8", "#f58518", "#54a24b", "#b279a2", "#9d755d", "#e45756
 COLOR_LINE = {"simple": "#c0504d", "color": "#2F6B65", "color_index": "#4c78a8", "color_degeneracy": "#e0a030"}
 
 PRESETS = {
+    "Standardfall (24 Sendungen)": {"type": DEFAULT_TYPE, "n": DEFAULT_N, "density": DEFAULT_DENSITY, "seed": DEFAULT_SEED, "bound": DEFAULT_BOUND, "order": DEFAULT_ORDER, "prune": False, "objective": DEFAULT_OBJECTIVE},
     "Lehrbeispiel (klein)": {"type": "random", "n": 10, "density": 50, "seed": 3, "bound": "color", "order": "degree", "prune": False, "objective": "size"},
     "Dicht: die Färbung rettet": {"type": "random", "n": 40, "density": 80, "seed": DEFAULT_SEED, "bound": "simple", "order": "degree", "prune": False, "objective": "size"},
     "Dünn: kaum Suche nötig": {"type": "random", "n": 60, "density": 10, "seed": DEFAULT_SEED, "bound": "color", "order": "degree", "prune": False, "objective": "size"},
@@ -45,6 +46,7 @@ PRESETS = {
     "Klassenregeln mit Wert": {"type": "classes", "n": 40, "density": 50, "seed": DEFAULT_SEED, "bound": "color", "order": "degree", "prune": False, "objective": "value"},
 }
 PRESET_HELP = {
+    "Standardfall (24 Sendungen)": "Die Voreinstellung: 24 Sendungen, jedes zweite Paar verträglich, Färbungsschranke, Startordnung Grad. Alle Kennzahlen der README zum Standardfall gelten hier.",
     "Lehrbeispiel (klein)": "10 Sendungen, jedes zweite Paar verträglich, Färbungsschranke: wenige Schritte, gut zum Durchklicken.",
     "Dicht: die Färbung rettet": "40 Sendungen, 80 % der Paare verträglich, aber mit der einfachen Schranke „Größe + Restkandidaten“: so viele Knoten wie nie nötig. Auf die Färbungsschranke umschalten und vergleichen.",
     "Dünn: kaum Suche nötig": "60 Sendungen, nur jedes zehnte Paar verträglich: Beide Schranken kommen mit wenigen Knoten aus.",

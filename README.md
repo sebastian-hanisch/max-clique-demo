@@ -74,7 +74,7 @@ Vor dem Bau lag eine Vormessung vor (andere Zählweise der Schritte). Sie bestä
 - **Orakel (`tests/test_oracle_max_clique.py`):** alle zwölf Konfigurationen (2 Schranken × 3 Startordnungen × Vorverarbeitung an/aus) gegen `networkx.max_weight_clique` auf über 300 festen Zufalls-, Zeitfenster-, Klassen- und Sonderinstanzen, je mit Anzahl- und Wertziel; gegen eine zweite, unabhängige Formulierung (OR-Tools CP-SAT) und gegen Brute Force über alle Teilmengen (n ≤ 12); Familien mit bekanntem Wert (Moon–Moser: ω = k, Baum: 2, vollständiger Graph: n, Zeitfenster: größte Zahl gleichzeitig offener Fenster, unabhängig per Sweep berechnet); α(Ḡ) = ω(G) gegen Brute Force.
 - **Zweige (`tests/test_branches.py`):** jede Schranke, Startordnung, die Gewichte, die Vorverarbeitung weichen auf mindestens einer Instanz von der Nachbarvariante ab; die Schranke jedes Aufruf-Ereignisses liegt über dem Wert der besten Fortsetzung innerhalb der Kandidaten (gegen Brute Force); die Wurzelschranke der Färbung liegt nie über „Größe + Rest“; die Rechengrenzen greifen.
 - **Zahlen:** `tests/test_claims.py` rechnet jede Zahl dieser README über dieselben Auswertungsfunktionen wie die App nach.
-- **Oberfläche:** AppTest-Rauchtest (jeder Button, jeder Regler an Minimum und Maximum, jede Regelart, Startordnung, Schranke, Ziel, Vorverarbeitung, Extrem-Seeds, Permalink, langsamste Ecke) und Footer-Test.
+- **Oberfläche:** AppTest-Rauchtest (jeder Button, jeder Regler an Minimum und Maximum, jede Regelart, Startordnung, Schranke, Ziel, Vorverarbeitung, Extrem-Seeds, Permalink, langsamste Ecke) Layout-Test (fester Kopf, Presets oben in der Seitenleiste, aktives Preset hervorgehoben, jede Regleränderung hebt die Markierung auf) und Footer-Test.
 
 ## Dateistruktur
 
@@ -87,6 +87,7 @@ Vor dem Bau lag eine Vormessung vor (andere Zählweise der Schritte). Sie bestä
 | `mxc_algorithm.py` | Kern: Einheiten, Branch-and-Bound mit zwei Schranken, Vorverarbeitung, Brute-Force-Referenzen |
 | `mxc_constants.py` | Regler-Grenzen, Rechengrenzen, Farben, Presets |
 | `mxc_evaluation.py` | Einstellungen, Analyse, Sweeps (Dichte, Strukturen, Kernzahl, Greedy, gewichtet), Komplement-Prüfung |
+| `mxc_layout.py` | fester Kopf (Gerüst aus `new_demo.py`) |
 | `mxc_presets.py` | Permalink (Begrenzen), Presets, Zufalls-Seed-Button |
 | `mxc_scenario.py` | Graphen: Zufall, Zeitfenster, Klassenregeln, Moon–Moser, Baum, Gitter, skalenfrei; Gewichte |
 | `mxc_visualization.py` | Plotly-Abbildungen (Achsen gesperrt) |

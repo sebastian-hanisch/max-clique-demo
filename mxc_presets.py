@@ -24,20 +24,24 @@ class SettingSpec:
     url_param: str
     caster: object
     default: object
-    lo: float | None = None
-    hi: float | None = None
+    lo: object = None                  # bei Auswahlreglern: erste und letzte Option (für tests/test_layout.py)
+    hi: object = None
     options: tuple | None = None       # erlaubte Werte bei Auswahlreglern
 
 
+def _choice(url_param, default, options):
+    return SettingSpec(url_param, str, default, options[0], options[-1], tuple(options))
+
+
 SETTING_SPECS = {
-    "type_select": SettingSpec("gt", str, C.DEFAULT_TYPE, options=tuple(C.GRAPH_TYPES)),
+    "type_select": _choice("gt", C.DEFAULT_TYPE, tuple(C.GRAPH_TYPES)),
     "n_slider": SettingSpec("n", int, C.DEFAULT_N, C.N_MIN, C.N_MAX),
     "density_slider": SettingSpec("d", int, C.DEFAULT_DENSITY, C.DENSITY_MIN, C.DENSITY_MAX),
     "seed_input": SettingSpec("seed", int, C.DEFAULT_SEED, 0, C.SEED_MAX),
-    "bound_radio": SettingSpec("b", str, C.DEFAULT_BOUND, options=tuple(C.BOUNDS)),
-    "order_select": SettingSpec("o", str, C.DEFAULT_ORDER, options=tuple(C.ORDERS)),
-    "prune_check": SettingSpec("p", _to_bool, False),
-    "objective_radio": SettingSpec("w", str, C.DEFAULT_OBJECTIVE, options=tuple(C.OBJECTIVES)),
+    "bound_radio": _choice("b", C.DEFAULT_BOUND, tuple(C.BOUNDS)),
+    "order_select": _choice("o", C.DEFAULT_ORDER, tuple(C.ORDERS)),
+    "prune_check": SettingSpec("p", _to_bool, False, False, True),
+    "objective_radio": _choice("w", C.DEFAULT_OBJECTIVE, tuple(C.OBJECTIVES)),
 }
 PRESET_KEYS = {"type": "type_select", "n": "n_slider", "density": "density_slider", "seed": "seed_input", "bound": "bound_radio", "order": "order_select",
                "prune": "prune_check", "objective": "objective_radio"}
@@ -102,3 +106,33 @@ def apply_preset(name):
 
 def randomize_seed():
     st.session_state["seed_input"] = random.randint(0, C.SEED_MAX)
+
+
+def aktives_preset():
+    """Name des Presets, dessen Werte GENAU den aktuellen Einstellungen entsprechen, sonst None.
+
+    Zustandslos: verglichen wird jeder Regler aus SETTING_SPECS (ein Preset ohne Eintrag für einen Regler meint dessen
+    Standardwert) mit dem Session State. Ein später ergänzter Regler braucht nur seinen Eintrag in SETTING_SPECS,
+    dann hebt auch seine Änderung die Markierung auf (tests/test_layout.py prüft das für jeden Regler)."""
+    preset_key_of = {state_key: key for key, state_key in PRESET_KEYS.items()}
+    for name, preset in C.PRESETS.items():
+        if all(
+            st.session_state.get(state_key, spec.default) == preset.get(preset_key_of.get(state_key), spec.default)
+            for state_key, spec in SETTING_SPECS.items()
+        ):
+            return name
+    return None
+
+
+def sidebar_presets():
+    """Schnellstart oben in der Seitenleiste; das aktive Preset ist hervorgehoben (`type="primary"`)."""
+    if not C.PRESETS:
+        return
+    st.header("🎯 Schnellstart")
+    st.caption("Ein Beispielszenario laden:")
+    aktiv = aktives_preset()
+    for name in C.PRESETS:
+        st.button(
+            name, width="stretch", on_click=apply_preset, args=(name,), help=C.PRESET_HELP.get(name, ""), key=f"preset_{name}",
+            type="primary" if aktiv == name else "secondary",
+        )

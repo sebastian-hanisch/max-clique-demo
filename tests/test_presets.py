@@ -90,3 +90,9 @@ def test_apply_preset_writes_every_state_key(name):
     seen = at.session_state["seen"]
     assert (seen["n_slider"], seen["type_select"], seen["density_slider"], seen["bound_radio"], seen["order_select"], seen["prune_check"], seen["objective_radio"]) == \
         (p["n"], p["type"], p["density"], p["bound"], p["order"], p["prune"], p["objective"])
+
+
+def test_first_preset_equals_the_default_settings():
+    first = C.PRESETS[next(iter(C.PRESETS))]
+    assert ev.Settings(graph_type=first["type"], n=first["n"], density=first["density"], seed=first["seed"], bound=first["bound"], order=first["order"], prune=first["prune"],
+                       objective=first["objective"]) == ev.Settings()
